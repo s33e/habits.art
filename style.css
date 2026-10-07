@@ -1,12 +1,20 @@
 /* habits.art: a 3×3 gallery of habit cards. Front is the drawing; tap and the card
    turns over to the habit in words. On phones, one card per screen, snapping. */
+/* both fonts are SIL Open Font License, served from this site */
+@font-face{ font-family: "Poppins"; font-weight: 800; font-style: normal; font-display: swap; src: url(fonts/poppins-latin-800-normal.woff2) format("woff2"); }
+@font-face{ font-family: "Gochi Hand"; font-weight: 400; font-style: normal; font-display: swap; src: url(fonts/gochi-hand-latin-400-normal.woff2) format("woff2"); }
+
 :root{
   color-scheme: light;
-  --paper: #FFFFFF;
+  --paper: #F5F5F7;   /* page ground, Apple light grey */
+  --card: #FFFFFF;    /* the cards stay paper-white like the drawings */
+  --title: #86868B;
   --ink: #111111;
   --quiet: #6E6E73;
   --hair: #E5E5EA;
   --green: #22C55E;
+  --display: "Poppins", "Arial Black", -apple-system, sans-serif;
+  --hand: "Gochi Hand", "Bradley Hand", "Segoe Print", cursive;
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -15,12 +23,27 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
 
 .wrap{ max-width: 1040px; margin: 0 auto; padding: 0 16px; }
 
+/* the header echoes each drawing's own title block: heavy caps, handwritten address beneath */
 .mast{
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding-block: 28px 24px;
+  text-align: center;
+  padding-block: clamp(40px, 7vw, 88px) clamp(28px, 4vw, 52px);
 }
-.mark{ font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
-.hint{ font-size: 13px; color: var(--quiet); }
+.title{
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(36px, 6.2vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--title);
+}
+.byline{
+  margin: .35em 0 0;
+  font-family: var(--hand);
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1;
+}
 
 /* ---------- grid ---------- */
 .grid{
@@ -53,7 +76,7 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
 .face{
   position: absolute; inset: 0;
   border-radius: 10px; overflow: hidden;
-  background: var(--paper);
+  background: var(--card);
   box-shadow: 0 0 0 1px var(--hair);
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
 }
