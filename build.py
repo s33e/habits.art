@@ -87,9 +87,9 @@ def split_lead(paragraphs):
     """First sentence becomes the bold lead; the rest stays as body paragraphs."""
     first = paragraphs[0]
     m = re.match(r"^(.+?[.!?])\s+(.+)$", first, re.S)
-    if not m:
-        return first, paragraphs[1:]
-    return m.group(1), [m.group(2)] + paragraphs[1:]
+    lead, rest = (m.group(1), [m.group(2)] + paragraphs[1:]) if m else (first, paragraphs[1:])
+    lead = re.sub(r"(?<!\.)\.$", "", lead)    # no full stop after the bold lead ("?" and "!" stay)
+    return lead, rest
 
 
 def read_selection():

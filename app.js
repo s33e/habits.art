@@ -42,6 +42,11 @@
     grid.appendChild(cell);
   }
 
+  // phones: a quiet arrow under the first card says there is more below
+  const hint = document.createElement('img');
+  hint.className = 'scroll-hint'; hint.src = 'assets/scroll-down.png'; hint.alt = ''; hint.width = 150; hint.height = 256;
+  grid.firstElementChild?.appendChild(hint);
+
   // habits.art/#pen-pal opens with that card in view and turned over
   function openFromHash() {
     const cell = location.hash && document.getElementById(location.hash.slice(1));
