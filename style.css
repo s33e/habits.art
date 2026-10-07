@@ -88,7 +88,7 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
 .back{
   transform: rotateY(180deg);
   display: flex; flex-direction: column; justify-content: flex-start;
-  padding: 12cqi 11cqi 9cqi;   /* fixed top padding: the mark sits at the same spot on every card */
+  padding: 11cqi 11cqi 16cqi;  /* fixed top padding; room at the bottom for the mark */
   overflow-y: auto;
 }
 /* one size for the whole text; the first sentence is bold. --fit (set in app.js) shrinks long texts */
@@ -98,9 +98,15 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
   line-height: 1.5;
   color: var(--ink);
 }
-.back p:last-child{ margin-bottom: 0; }
+.back p:last-of-type{ margin-bottom: 0; }
 .back p.lead{ font-weight: 700; margin-bottom: .5em; }
-.back .mark{ width: 1.55em; height: auto; display: inline-block; vertical-align: -0.02em; margin-right: .4em; }
+/* a quiet grey mark, centred at the bottom of every card back */
+.back .mark{ position: absolute; left: 50%; bottom: 7cqi; transform: translateX(-50%); width: 7.5cqi; height: auto; }
+/* narrower windows: the text needs that room, so the mark steps aside */
+@media (max-width: 900px){
+  .back{ padding-bottom: 9cqi; }
+  .back .mark{ display: none; }
+}
 
 .foot{ text-align: center; font-size: 12px; line-height: 1.6; color: var(--title); padding-block: 8px 48px; }
 
@@ -138,6 +144,7 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
   .front img{ aspect-ratio: 1; height: auto; }
   .back{ transform: none; padding: 4px 26px 30px; overflow: visible; }
   .back p{ font-size: 18px; }
+  .back .mark{ display: none; }   /* phones already have the grey scroll arrow */
 }
 
 @media (prefers-reduced-motion: reduce){

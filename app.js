@@ -24,14 +24,15 @@
         <div class="card-inner">
           <div class="face front"><img src="${esc(h.image)}" alt="${esc(h.name)}" width="1200" height="1200" loading="lazy"></div>
           <div class="face back">
-            <p class="lead"><img class="mark" src="assets/mark.png" alt="" width="256" height="150">${esc(h.lead)}</p>
+            <p class="lead">${esc(h.lead)}</p>
             ${h.text.map(t => `<p>${esc(t)}</p>`).join('')}
+            <img class="mark" src="assets/mark-grey.png" alt="" width="256" height="150">
           </div>
         </div>
       </button>`;
     const card = cell.querySelector('.card');
     const length = [h.lead, ...h.text].join(' ').length;
-    card.style.setProperty('--fit', Math.min(1, Math.sqrt(190 / length)).toFixed(3));
+    card.style.setProperty('--fit', Math.min(1, Math.sqrt(175 / length)).toFixed(3));
     card.addEventListener('click', e => {
       if (phone.matches) return;             // phones show drawing and text together, nothing to turn
       e.stopPropagation();
