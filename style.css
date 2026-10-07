@@ -102,6 +102,8 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
 .back p.lead{ font-weight: 700; margin-bottom: .5em; }
 .back .mark{ width: 1.55em; height: auto; display: inline-block; vertical-align: -0.02em; margin-right: .4em; }
 
+.foot{ text-align: center; font-size: 12px; line-height: 1.6; color: var(--title); padding-block: 8px 48px; }
+
 .scroll-hint{ display: none; }
 
 /* ---------- phones: one tall card per screen, drawing above its text, no turning ---------- */
@@ -120,6 +122,8 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
   /* the first card sits right under the title; snapping starts with the second */
   .cell:first-child{ min-height: 0; display: flex; flex-direction: column; align-items: center; scroll-snap-align: none; padding-block: 0 12svh; }
   .scroll-hint{ display: block; width: 20px; height: auto; margin: 14px auto 0; }
+
+  .foot{ scroll-snap-align: end; padding-block: 24px 40px; }
 
   .card{ aspect-ratio: auto; width: 100%; perspective: none; cursor: default; container-type: normal; }
   .card-inner{

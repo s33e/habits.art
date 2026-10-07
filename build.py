@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parent
 LIBRARY_REPO = "https://github.com/s33e/happyhabits-site"
 IMAGE_SIZE = 1200          # px, square
 IMAGE_QUALITY = 86         # webp
+COPYRIGHT = "Copyright 2022-2026 habits.art. All rights reserved."   # written into every image file (plain ASCII, as EXIF requires)
 
 # Leading emoji / symbols at the start of a description ("🚁  When in doubt...")
 LEADING_SYMBOLS = re.compile(r"^[^\w\"'“‘(]+", re.UNICODE)
@@ -128,7 +129,10 @@ def main():
         if not target.exists():
             im = Image.open(lib / "images" / f"{slug}.jpg").convert("RGB")
             im = im.resize((IMAGE_SIZE, IMAGE_SIZE), Image.LANCZOS)
-            im.save(target, "WEBP", quality=IMAGE_QUALITY, method=6)
+            exif = Image.Exif()
+            exif[0x8298] = COPYRIGHT      # Copyright
+            exif[0x013B] = "habits.art"   # Artist
+            im.save(target, "WEBP", quality=IMAGE_QUALITY, method=6, exif=exif.tobytes())
         habits.append({
             "slug": slug,
             "name": clean_name(row["name"]),
