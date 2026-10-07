@@ -1,6 +1,7 @@
 // habits.art: renders the cards from habits.json. Nothing in here needs to change when habits are swapped.
 (async function () {
   const grid = document.getElementById('grid');
+  const phone = window.matchMedia('(max-width: 620px)');
   let habits = [];
   try {
     const v = document.querySelector('meta[name="data-version"]')?.content || '';
@@ -30,6 +31,7 @@
     const length = h.text.join(' ').length;
     card.style.setProperty('--fit', Math.min(1, Math.sqrt(190 / length)).toFixed(3));
     card.addEventListener('click', () => {
+      if (phone.matches) return;             // phones show drawing and text together, nothing to turn
       const on = card.classList.toggle('flipped');
       card.setAttribute('aria-pressed', String(on));
     });

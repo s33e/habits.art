@@ -1,5 +1,5 @@
 /* habits.art: a 3×3 gallery of habit cards. Front is the drawing; tap and the card
-   turns over to the habit in words. On phones, one card per screen, snapping. */
+   turns over to the habit in words. On phones: one tall card per screen, drawing above text. */
 /* both fonts are SIL Open Font License, served from this site */
 @font-face{ font-family: "Poppins"; font-weight: 800; font-style: normal; font-display: swap; src: url(fonts/poppins-latin-800-normal.woff2) format("woff2"); }
 @font-face{ font-family: "Gochi Hand"; font-weight: 400; font-style: normal; font-display: swap; src: url(fonts/gochi-hand-latin-400-normal.woff2) format("woff2"); }
@@ -103,7 +103,7 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
 /* --fit (set per card in app.js) shrinks longer texts so every back fits its card */
 .back p{ margin: 0 0 .6em; font-size: clamp(13px, calc(5.4cqi * var(--fit, 1)), 21px); line-height: 1.45; }
 
-/* ---------- phones: one card per screen ---------- */
+/* ---------- phones: one tall card per screen, drawing above its text, no turning ---------- */
 @media (max-width: 620px){
   html{ scroll-snap-type: y mandatory; }
   .mast{ scroll-snap-align: start; padding-block: 40px 24px; }
@@ -111,11 +111,31 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
   .cell{
     min-height: 100vh; min-height: 100svh;
     display: grid; place-items: center;
+    padding-block: 16px;
     scroll-snap-align: center;
   }
   /* the first card sits right under the title; snapping starts with the second */
   .cell:first-child{ min-height: 0; place-items: start center; scroll-snap-align: none; padding-block: 0 12svh; }
-  .card{ width: min(100%, 82svh); }
+
+  .card{ aspect-ratio: auto; width: 100%; perspective: none; cursor: default; container-type: normal; }
+  .card-inner{
+    height: auto; transform: none; transition: none;
+    display: flex; flex-direction: column;
+    background: var(--card); border-radius: 14px; overflow: hidden;
+    box-shadow: 0 0 0 1px var(--hair);
+  }
+  .card.flipped .card-inner{ transform: none; }
+  .face{ position: static; -webkit-backface-visibility: visible; backface-visibility: visible; border-radius: 0; box-shadow: none; }
+  .card:hover .face{ box-shadow: none; }
+  .front img{ aspect-ratio: 1; height: auto; }
+  .back{ transform: none; padding: 0 26px 30px; overflow: visible; justify-content: flex-start; }
+  .back h2{ display: none; }   /* the drawing already carries the title */
+  .back p{ font-size: 18px; line-height: 1.5; margin: 0 0 .6em; }
+  .back p:last-child{ margin-bottom: 0; }
+  .back p:first-of-type::before{
+    content: ""; display: block; width: 32px; height: 4px; border-radius: 2px;
+    background: var(--green); margin: 0 0 16px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce){
