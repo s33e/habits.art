@@ -83,6 +83,15 @@ def clean_name(raw):
     return " ".join(out)
 
 
+def split_lead(paragraphs):
+    """First sentence becomes the bold lead; the rest stays as body paragraphs."""
+    first = paragraphs[0]
+    m = re.match(r"^(.+?[.!?])\s+(.+)$", first, re.S)
+    if not m:
+        return first, paragraphs[1:]
+    return m.group(1), [m.group(2)] + paragraphs[1:]
+
+
 def read_selection():
     lines = (ROOT / "habits.txt").read_text(encoding="utf-8").splitlines()
     return [l.strip() for l in lines if l.strip() and not l.strip().startswith("#")]
@@ -124,7 +133,8 @@ def main():
             "slug": slug,
             "name": clean_name(row["name"]),
             "image": f"images/{slug}.webp?v={short_hash(target)}",
-            "text": clean_text(row["description"]),
+            "lead": split_lead(clean_text(row["description"]))[0],
+            "text": split_lead(clean_text(row["description"]))[1],
         })
 
     # drop images of habits that are no longer selected
@@ -137,7 +147,7 @@ def main():
     stamp_versions()
     print(f"Built {len(habits)} habits:")
     for h in habits:
-        print(f"  {h['name']}  ({sum(len(p) for p in h['text'])} chars)")
+        print(f"  {h['name']}  ({len(h['lead']) + sum(len(p) for p in h['text'])} chars)")
 
 
 if __name__ == "__main__":

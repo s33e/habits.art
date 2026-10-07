@@ -87,21 +87,20 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
 
 .back{
   transform: rotateY(180deg);
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 9cqi 9cqi 7cqi;
+  display: flex; flex-direction: column; justify-content: flex-start;
+  padding: 12cqi 11cqi 9cqi;   /* fixed top padding: the mark sits at the same spot on every card */
   overflow-y: auto;
 }
-.back h2{
-  margin: 0 0 5cqi;
-  font-size: clamp(20px, 8cqi, 34px); line-height: 1.08; letter-spacing: -0.02em; font-weight: 700;
-  text-wrap: balance;
+/* one size for the whole text; the first sentence is bold. --fit (set in app.js) shrinks long texts */
+.back p{
+  margin: 0 0 .6em;
+  font-size: clamp(13px, calc(5.2cqi * var(--fit, 1)), 20px);
+  line-height: 1.5;
+  color: var(--ink);
 }
-.back h2::after{
-  content: ""; display: block; width: 32px; height: 4px; border-radius: 2px;
-  background: var(--green); margin-top: 3.6cqi;
-}
-/* --fit (set per card in app.js) shrinks longer texts so every back fits its card */
-.back p{ margin: 0 0 .6em; font-size: clamp(13px, calc(5.4cqi * var(--fit, 1)), 21px); line-height: 1.45; }
+.back p:last-child{ margin-bottom: 0; }
+.back p.lead{ font-weight: 700; margin-bottom: .5em; }
+.back .mark{ width: 1.55em; height: auto; display: inline-block; vertical-align: -0.02em; margin-right: .4em; }
 
 /* ---------- phones: one tall card per screen, drawing above its text, no turning ---------- */
 @media (max-width: 620px){
@@ -128,14 +127,8 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
   .face{ position: static; -webkit-backface-visibility: visible; backface-visibility: visible; border-radius: 0; box-shadow: none; }
   .card:hover .face{ box-shadow: none; }
   .front img{ aspect-ratio: 1; height: auto; }
-  .back{ transform: none; padding: 0 26px 30px; overflow: visible; justify-content: flex-start; }
-  .back h2{ display: none; }   /* the drawing already carries the title */
-  .back p{ font-size: 18px; line-height: 1.5; margin: 0 0 .6em; }
-  .back p:last-child{ margin-bottom: 0; }
-  .back p:first-of-type::before{
-    content: ""; display: block; width: 32px; height: 4px; border-radius: 2px;
-    background: var(--green); margin: 0 0 16px;
-  }
+  .back{ transform: none; padding: 4px 26px 30px; overflow: visible; }
+  .back p{ font-size: 18px; }
 }
 
 @media (prefers-reduced-motion: reduce){
