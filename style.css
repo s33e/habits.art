@@ -1,0 +1,99 @@
+/* habits.art: a 3×3 gallery of habit cards. Front is the drawing; tap and the card
+   turns over to the habit in words. On phones, one card per screen, snapping. */
+:root{
+  color-scheme: light;
+  --paper: #FFFFFF;
+  --ink: #111111;
+  --quiet: #6E6E73;
+  --hair: #E5E5EA;
+  --green: #22C55E;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html, body{ margin: 0; background: var(--paper); color: var(--ink); }
+body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
+
+.wrap{ max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+
+.mast{
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-block: 28px 24px;
+}
+.mark{ font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.hint{ font-size: 13px; color: var(--quiet); }
+
+/* ---------- grid ---------- */
+.grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 24px);
+  padding-block: 0 72px;
+}
+.cell{ min-width: 0; }
+
+/* ---------- card ---------- */
+.card{
+  display: block; width: 100%;
+  aspect-ratio: 1; max-width: 100%;
+  container-type: inline-size;
+  perspective: 1400px;
+  border: 0; padding: 0; background: none;
+  cursor: pointer; font: inherit; color: inherit; text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.card:focus-visible{ outline: 2px solid var(--green); outline-offset: 4px; border-radius: 12px; }
+
+.card-inner{
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .7s cubic-bezier(.3,.7,.2,1);
+}
+.card.flipped .card-inner{ transform: rotateY(180deg); }
+
+.face{
+  position: absolute; inset: 0;
+  border-radius: 10px; overflow: hidden;
+  background: var(--paper);
+  box-shadow: 0 0 0 1px var(--hair);
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+.front img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (hover: hover){
+  .card:hover .face{ box-shadow: 0 0 0 1px var(--hair), 0 14px 32px rgba(0,0,0,.08); }
+}
+
+.back{
+  transform: rotateY(180deg);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 9cqi 9cqi 7cqi;
+  overflow-y: auto;
+}
+.back h2{
+  margin: 0 0 5cqi;
+  font-size: clamp(20px, 8cqi, 34px); line-height: 1.08; letter-spacing: -0.02em; font-weight: 700;
+  text-wrap: balance;
+}
+.back h2::after{
+  content: ""; display: block; width: 32px; height: 4px; border-radius: 2px;
+  background: var(--green); margin-top: 3.6cqi;
+}
+/* --fit (set per card in app.js) shrinks longer texts so every back fits its card */
+.back p{ margin: 0 0 .6em; font-size: clamp(13px, calc(5.4cqi * var(--fit, 1)), 21px); line-height: 1.45; }
+
+/* ---------- phones: one card per screen ---------- */
+@media (max-width: 620px){
+  html{ scroll-snap-type: y mandatory; }
+  .mast{ scroll-snap-align: start; }
+  .grid{ grid-template-columns: minmax(0, 1fr); gap: 0; padding-block: 0; }
+  .cell{
+    min-height: 100vh; min-height: 100svh;
+    display: grid; place-items: center;
+    scroll-snap-align: center;
+  }
+  .card{ width: min(100%, 82svh); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .card-inner{ transition: none; }
+  html{ scroll-behavior: auto; }
+}
