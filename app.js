@@ -2,6 +2,8 @@
 (async function () {
   const grid = document.getElementById('grid');
   const phone = window.matchMedia('(max-width: 620px)');
+  const setFlipped = (card, on) => { card.classList.toggle('flipped', on); card.setAttribute('aria-pressed', String(on)); };
+  const closeAll = () => document.querySelectorAll('.card.flipped').forEach(c => setFlipped(c, false));
   let habits = [];
   try {
     const v = document.querySelector('meta[name="data-version"]')?.content || '';
@@ -30,10 +32,12 @@
     const card = cell.querySelector('.card');
     const length = [h.lead, ...h.text].join(' ').length;
     card.style.setProperty('--fit', Math.min(1, Math.sqrt(190 / length)).toFixed(3));
-    card.addEventListener('click', () => {
+    card.addEventListener('click', e => {
       if (phone.matches) return;             // phones show drawing and text together, nothing to turn
-      const on = card.classList.toggle('flipped');
-      card.setAttribute('aria-pressed', String(on));
+      e.stopPropagation();
+      const wasOpen = card.classList.contains('flipped');
+      closeAll();
+      if (!wasOpen) setFlipped(card, true);  // only one card shows its text at a time
     });
     grid.appendChild(cell);
   }
@@ -43,18 +47,12 @@
     const cell = location.hash && document.getElementById(location.hash.slice(1));
     if (!cell) return;
     cell.scrollIntoView({ block: 'center' });
-    const card = cell.querySelector('.card');
-    card.classList.add('flipped');
-    card.setAttribute('aria-pressed', 'true');
+    closeAll();
+    setFlipped(cell.querySelector('.card'), true);
   }
   window.addEventListener('hashchange', openFromHash);
   openFromHash();
 
-  document.addEventListener('keydown', e => {
-    if (e.key !== 'Escape') return;
-    document.querySelectorAll('.card.flipped').forEach(c => {
-      c.classList.remove('flipped');
-      c.setAttribute('aria-pressed', 'false');
-    });
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+  document.addEventListener('click', () => closeAll());   // a click on the background turns the open card back
 })();
