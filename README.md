@@ -12,6 +12,9 @@ A 3×3 gallery of Happy Habits. Each card shows the drawing; tap it and it turns
 
 The build stops with a clear message if a slug is unknown, has no drawing or has no text.
 
+After changing `style.css` or `app.js`, also run `python3 build.py`: it stamps those files
+with a content version (`?v=...`) so visitors never get a new page with old styling.
+
 ## Files
 
 | File | Role |

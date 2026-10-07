@@ -10,6 +10,7 @@ Lines starting with # are ignored.
 """
 import argparse
 import csv
+import hashlib
 import json
 import re
 import subprocess
@@ -25,6 +26,22 @@ IMAGE_QUALITY = 86         # webp
 
 # Leading emoji / symbols at the start of a description ("🚁  When in doubt...")
 LEADING_SYMBOLS = re.compile(r"^[^\w\"'“‘(]+", re.UNICODE)
+
+
+def short_hash(path):
+    return hashlib.sha1(Path(path).read_bytes()).hexdigest()[:10]
+
+
+def stamp_versions():
+    """Give style.css, app.js and habits.json a content stamp (?v=...) in index.html,
+    so a browser always gets the page and its styling/data as a matching set."""
+    index = ROOT / "index.html"
+    html = index.read_text(encoding="utf-8")
+    for name in ("style.css", "app.js"):
+        html = re.sub(rf'{re.escape(name)}(\?v=[0-9a-f]+)?"', f'{name}?v={short_hash(ROOT / name)}"', html)
+    data_v = short_hash(ROOT / "habits.json")
+    html = re.sub(r'<meta name="data-version" content="[0-9a-f]*">', f'<meta name="data-version" content="{data_v}">', html)
+    index.write_text(html, encoding="utf-8")
 
 
 def get_library(path_arg):
@@ -106,7 +123,7 @@ def main():
         habits.append({
             "slug": slug,
             "name": clean_name(row["name"]),
-            "image": f"images/{slug}.webp",
+            "image": f"images/{slug}.webp?v={short_hash(target)}",
             "text": clean_text(row["description"]),
         })
 
@@ -117,6 +134,7 @@ def main():
             f.unlink()
 
     (ROOT / "habits.json").write_text(json.dumps(habits, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    stamp_versions()
     print(f"Built {len(habits)} habits:")
     for h in habits:
         print(f"  {h['name']}  ({sum(len(p) for p in h['text'])} chars)")

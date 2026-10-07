@@ -2,7 +2,7 @@
   {
     "slug": "eat-the-frog",
     "name": "Eat the Frog",
-    "image": "images/eat-the-frog.webp",
+    "image": "images/eat-the-frog.webp?v=72704a5892",
     "text": [
       "Do the most difficult task of the day first. Once you completed the most difficult task, everything else will seem easy. If you want to get things done, do them in the morning. As the day progresses, your willpower diminishes. Like a muscle, it becomes tired from overuse."
     ]
@@ -10,7 +10,7 @@
   {
     "slug": "two-minute-rule",
     "name": "Two Minute Rule",
-    "image": "images/two-minute-rule.webp",
+    "image": "images/two-minute-rule.webp?v=8de3c49ccd",
     "text": [
       "If a task takes two minutes or less, do it immediately. Gets easy tasks out of your head and out of the way. Adding the task to your mental to-do list and managing the anxiety of not having done it takes more effort than just doing it now."
     ]
@@ -18,7 +18,7 @@
   {
     "slug": "make-your-bed",
     "name": "Make Your Bed",
-    "image": "images/make-your-bed.webp",
+    "image": "images/make-your-bed.webp?v=0eedacca7a",
     "text": [
       "Make your bed first thing in the morning. If you make your bed in the morning, you will have accomplished the first task of the day. No matter what happens throughout the day, it always feels good to come home to a made bed."
     ]
@@ -26,7 +26,7 @@
   {
     "slug": "trust-yourself",
     "name": "Trust Yourself",
-    "image": "images/trust-yourself.webp",
+    "image": "images/trust-yourself.webp?v=bd50c287a9",
     "text": [
       "Start that project. …Make that change. Trust yourself. Ten years from now you will be more disappointed by the things you didn’t than by the things you did do."
     ]
@@ -34,7 +34,7 @@
   {
     "slug": "drink-water",
     "name": "Drink Water",
-    "image": "images/drink-water.webp",
+    "image": "images/drink-water.webp?v=3fdd901dd0",
     "text": [
       "Drink at least 2 liters of water every day. Drinking water makes you less hungry, more awake and more alert. It also improves short term memory and mental function. If you want to crush it during the day, stay hydrated."
     ]
@@ -42,7 +42,7 @@
   {
     "slug": "other-persons-chair",
     "name": "Other Person's Chair",
-    "image": "images/other-persons-chair.webp",
+    "image": "images/other-persons-chair.webp?v=2a55147e94",
     "text": [
       "Seek first to understand, then to be understood. In order to empathize better with others, put yourself in their shoes. How would you feel and act if you were sitting in their place?"
     ]
@@ -50,7 +50,7 @@
   {
     "slug": "breathe",
     "name": "Breathe",
-    "image": "images/breathe.webp",
+    "image": "images/breathe.webp?v=3f446e8baf",
     "text": [
       "When you are stressed or nervous, take five deep breaths. Deep breathing reduces stress and lowers blood pressure. It also increases energy, happiness and confidence. Consciously take 10 deep breaths at least 3 times per day."
     ]
@@ -58,7 +58,7 @@
   {
     "slug": "celebrate",
     "name": "Celebrate",
-    "image": "images/celebrate.webp",
+    "image": "images/celebrate.webp?v=9cccc01591",
     "text": [
       "Celebrate successes, even small ones. Celebrate your wins, often the journey is the destination. Enjoy the journey. Acknowledge what you have accomplished. This will give you the energy and motivation to achieve even more."
     ]
@@ -66,7 +66,7 @@
   {
     "slug": "sleep",
     "name": "Sleep",
-    "image": "images/sleep.webp",
+    "image": "images/sleep.webp?v=69ae6fe7cc",
     "text": [
       "Sleep seven hours every night. Everything you do, you'll do better with a good night's sleep. A good night's sleep lowers your overall stress level, improves your mood, and enhances your health."
     ]

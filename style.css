@@ -106,13 +106,15 @@ body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
 /* ---------- phones: one card per screen ---------- */
 @media (max-width: 620px){
   html{ scroll-snap-type: y mandatory; }
-  .mast{ scroll-snap-align: start; }
+  .mast{ scroll-snap-align: start; padding-block: 40px 24px; }
   .grid{ grid-template-columns: minmax(0, 1fr); gap: 0; padding-block: 0; }
   .cell{
     min-height: 100vh; min-height: 100svh;
     display: grid; place-items: center;
     scroll-snap-align: center;
   }
+  /* the first card sits right under the title; snapping starts with the second */
+  .cell:first-child{ min-height: 0; place-items: start center; scroll-snap-align: none; padding-block: 0 12svh; }
   .card{ width: min(100%, 82svh); }
 }
 

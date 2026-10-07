@@ -3,7 +3,8 @@
   const grid = document.getElementById('grid');
   let habits = [];
   try {
-    habits = await fetch('habits.json', { cache: 'no-cache' }).then(r => r.json());
+    const v = document.querySelector('meta[name="data-version"]')?.content || '';
+    habits = await fetch('habits.json?v=' + v, { cache: 'no-cache' }).then(r => r.json());
   } catch (e) {
     grid.textContent = 'The habits could not be loaded. Please reload the page.';
     return;
