@@ -3,7 +3,7 @@
 
 Usage:
     python3 build.py                      # library cloned/updated automatically
-    python3 build.py --library ../happyhabits-site
+    python3 build.py --library ../habits-library
 
 The selection lives in habits.txt: one slug per line, in grid order.
 Lines starting with # are ignored.
@@ -20,7 +20,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent
-LIBRARY_REPO = "https://github.com/s33e/happyhabits-site"
+LIBRARY_REPO = "https://github.com/s33e/habits-library"
 IMAGE_SIZE = 1200          # px, square
 IMAGE_QUALITY = 86         # webp
 COPYRIGHT = "Copyright 2022-2026 habits.art. All rights reserved."   # written into every image file (plain ASCII, as EXIF requires)
@@ -46,51 +46,38 @@ def stamp_versions():
 
 
 def get_library(path_arg):
-    if path_arg:
-        lib = Path(path_arg).resolve()
-    else:
-        lib = ROOT.parent / "happyhabits-site"
-        if (lib / ".git").exists():
-            subprocess.run(["git", "-C", str(lib), "pull", "-q"], check=False)
-        else:
-            subprocess.run(["git", "clone", "-q", "--depth", "1", LIBRARY_REPO, str(lib)], check=True)
-    if not (lib / "habits.csv").exists():
-        sys.exit(f"No habits.csv in {lib}")
+    lib = Path(path_arg).resolve() if path_arg else ROOT.parent / "habits-library"
+    if not lib.exists():
+        subprocess.run(["git", "clone", "-q", "--depth", "1", LIBRARY_REPO, str(lib)], check=True)
+    elif not path_arg and (lib / ".git").exists():
+        subprocess.run(["git", "-C", str(lib), "pull", "-q"], check=False)
     return lib
 
 
-def clean_text(raw):
-    text = raw.split(" // ")[0]                 # some entries hold a second, longer version after //
-    text = LEADING_SYMBOLS.sub("", text.strip())
-    paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
-    return [re.sub(r"\s+", " ", p) for p in paragraphs]
+def read_habit(lib, slug):
+    """Find <year>/<slug>/habit.md in the library and return (folder, name, lead, paragraphs)."""
+    hits = sorted(lib.glob(f"*/{slug}/habit.md"))
+    if not hits:
+        return None
+    t = hits[0].read_text(encoding="utf-8")
+    head, body = t.split("\n---\n", 1)
+    name = re.search(r"\nname: (.*)", head).group(1).strip()
+    m = re.match(r"\s*## (.*?)\n(.*)", body, re.S)
+    lead, rest = m.group(1).strip(), m.group(2)
+    paras = [re.sub(r"\s+", " ", p).strip() for p in re.split(r"\n\s*\n", rest) if p.strip()]
+    return hits[0].parent, name, re.sub(r"(?<!\.)\.$", "", lead), paras
 
 
-SMALL_WORDS = {"a", "an", "and", "as", "at", "but", "by", "for", "in", "of", "on", "or", "the", "to", "vs"}
-
-
-def clean_name(raw):
-    name = re.split(r"\s+-{2,}", raw)[0]          # "Keep Learning ---- (formerly Learn)" -> "Keep Learning"
-    name = re.sub(r"\s+", " ", name).strip()
-    words = name.split(" ")
-    out = []
-    for i, w in enumerate(words):
-        if i > 0 and w.lower() in SMALL_WORDS and not words[i - 1].endswith(")"):
-            out.append(w.lower())
-        elif w[:1].islower():
-            out.append(w[:1].upper() + w[1:])
-        else:
-            out.append(w)
-    return " ".join(out)
-
-
-def split_lead(paragraphs):
-    """First sentence becomes the bold lead; the rest stays as body paragraphs."""
-    first = paragraphs[0]
-    m = re.match(r"^(.+?[.!?])\s+(.+)$", first, re.S)
-    lead, rest = (m.group(1), [m.group(2)] + paragraphs[1:]) if m else (first, paragraphs[1:])
-    lead = re.sub(r"(?<!\.)\.$", "", lead)    # no full stop after the bold lead ("?" and "!" stay)
-    return lead, rest
+def render(svg, target):
+    import base64, io
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        b = p.chromium.launch(); pg = b.new_page(viewport={"width": IMAGE_SIZE, "height": IMAGE_SIZE})
+        pg.set_content('<body style="margin:0"><img src="data:image/svg+xml;base64,' + base64.b64encode(svg.read_bytes()).decode() + f'" width={IMAGE_SIZE} height={IMAGE_SIZE}>')
+        pg.wait_for_timeout(150); png = pg.screenshot(); b.close()
+    im = Image.open(io.BytesIO(png)).convert("RGB")
+    exif = Image.Exif(); exif[0x8298] = COPYRIGHT; exif[0x013B] = "habits.art"
+    im.save(target, "WEBP", quality=IMAGE_QUALITY, method=6, exif=exif.tobytes())
 
 
 def read_selection():
@@ -104,17 +91,10 @@ def main():
     args = ap.parse_args()
 
     lib = get_library(args.library)
-    rows = {r["slug"]: r for r in csv.DictReader(open(lib / "habits.csv", encoding="utf-8"))}
     selection = read_selection()
-
-    problems = []
-    for slug in selection:
-        if slug not in rows:
-            problems.append(f"{slug}: not in habits.csv")
-        elif not (lib / "images" / f"{slug}.jpg").exists():
-            problems.append(f"{slug}: no drawing in images/")
-        elif len(clean_text(rows[slug]["description"])) == 0:
-            problems.append(f"{slug}: no text")
+    found = {slug: read_habit(lib, slug) for slug in selection}
+    problems = [f"{s}: not in the library" for s, h in found.items() if not h]
+    problems += [f"{s}: no text yet" for s, h in found.items() if h and h[2] == "(subtitle)"]
     if len(set(selection)) != len(selection):
         problems.append("habits.txt lists the same slug twice")
     if problems:
@@ -124,22 +104,10 @@ def main():
     out_dir.mkdir(exist_ok=True)
     habits = []
     for slug in selection:
-        row = rows[slug]
+        folder, name, lead, paras = found[slug]
         target = out_dir / f"{slug}.webp"
-        if not target.exists():
-            im = Image.open(lib / "images" / f"{slug}.jpg").convert("RGB")
-            im = im.resize((IMAGE_SIZE, IMAGE_SIZE), Image.LANCZOS)
-            exif = Image.Exif()
-            exif[0x8298] = COPYRIGHT      # Copyright
-            exif[0x013B] = "habits.art"   # Artist
-            im.save(target, "WEBP", quality=IMAGE_QUALITY, method=6, exif=exif.tobytes())
-        habits.append({
-            "slug": slug,
-            "name": clean_name(row["name"]),
-            "image": f"images/{slug}.webp?v={short_hash(target)}",
-            "lead": split_lead(clean_text(row["description"]))[0],
-            "text": split_lead(clean_text(row["description"]))[1],
-        })
+        render(folder / "drawing.svg", target)
+        habits.append({"slug": slug, "name": name, "image": f"images/{slug}.webp?v={short_hash(target)}", "lead": lead, "text": paras})
 
     # drop images of habits that are no longer selected
     keep = {f"{s}.webp" for s in selection}

@@ -2,7 +2,7 @@
   {
     "slug": "eat-the-frog",
     "name": "Eat the Frog",
-    "image": "images/eat-the-frog.webp?v=cccb7184a9",
+    "image": "images/eat-the-frog.webp?v=1081eba805",
     "lead": "Do the most difficult task of the day first",
     "text": [
       "Once you completed the most difficult task, everything else will seem easy. If you want to get things done, do them in the morning. As the day progresses, your willpower diminishes. Like a muscle, it becomes tired from overuse."
@@ -11,7 +11,7 @@
   {
     "slug": "two-minute-rule",
     "name": "Two Minute Rule",
-    "image": "images/two-minute-rule.webp?v=9914eec475",
+    "image": "images/two-minute-rule.webp?v=651604fc9e",
     "lead": "If a task takes two minutes or less, do it immediately",
     "text": [
       "Gets easy tasks out of your head and out of the way. Adding the task to your mental to-do list and managing the anxiety of not having done it takes more effort than just doing it now."
@@ -20,7 +20,7 @@
   {
     "slug": "make-your-bed",
     "name": "Make Your Bed",
-    "image": "images/make-your-bed.webp?v=1ff292c9ea",
+    "image": "images/make-your-bed.webp?v=8823b2ae93",
     "lead": "Make your bed first thing in the morning",
     "text": [
       "If you make your bed in the morning, you will have accomplished the first task of the day. No matter what happens throughout the day, it always feels good to come home to a made bed."
@@ -29,16 +29,16 @@
   {
     "slug": "trust-yourself",
     "name": "Trust Yourself",
-    "image": "images/trust-yourself.webp?v=4dcbe57ef4",
+    "image": "images/trust-yourself.webp?v=bff693e50d",
     "lead": "Start that project",
     "text": [
-      "…Make that change. Trust yourself. Ten years from now you will be more disappointed by the things you didn’t than by the things you did do."
+      "…Make that change. Trust yourself. Ten years from now you will be more disappointed by the things you didn't than by the things you did do."
     ]
   },
   {
     "slug": "drink-water",
     "name": "Drink Water",
-    "image": "images/drink-water.webp?v=10c8ac8738",
+    "image": "images/drink-water.webp?v=32d6431690",
     "lead": "Drink at least 2 liters of water every day",
     "text": [
       "Drinking water makes you less hungry, more awake and more alert. It also improves short term memory and mental function. If you want to crush it during the day, stay hydrated."
@@ -47,25 +47,25 @@
   {
     "slug": "other-persons-chair",
     "name": "Other Person's Chair",
-    "image": "images/other-persons-chair.webp?v=06f7706230",
+    "image": "images/other-persons-chair.webp?v=8df06e6731",
     "lead": "Seek first to understand, then to be understood",
     "text": [
-      "In order to empathize better with others, put yourself in their shoes. How would you feel and act if you were sitting in their place?"
+      "In order to empathise better with others, put yourself in their shoes. How would you feel and act if you were sitting in their place?"
     ]
   },
   {
     "slug": "breathe",
     "name": "Breathe",
-    "image": "images/breathe.webp?v=3ccdc824b6",
+    "image": "images/breathe.webp?v=5ec2bb27b8",
     "lead": "When you are stressed or nervous, take five deep breaths",
     "text": [
-      "Deep breathing reduces stress and lowers blood pressure. It also increases energy, happiness and confidence. Consciously take 10 deep breaths at least 3 times per day."
+      "Deep breathing reduces stress and lowers blood pressure. It also increases energy, happiness and confidence. Consciously take 5 deep breaths at least 3 times per day."
     ]
   },
   {
     "slug": "celebrate",
     "name": "Celebrate",
-    "image": "images/celebrate.webp?v=4969ba59dc",
+    "image": "images/celebrate.webp?v=60ad056942",
     "lead": "Celebrate successes, even small ones",
     "text": [
       "Celebrate your wins, often the journey is the destination. Enjoy the journey. Acknowledge what you have accomplished. This will give you the energy and motivation to achieve even more."
@@ -74,7 +74,7 @@
   {
     "slug": "sleep",
     "name": "Sleep",
-    "image": "images/sleep.webp?v=9e2ed55898",
+    "image": "images/sleep.webp?v=8033d8db4b",
     "lead": "Sleep seven hours every night",
     "text": [
       "Everything you do, you'll do better with a good night's sleep. A good night's sleep lowers your overall stress level, improves your mood, and enhances your health."
