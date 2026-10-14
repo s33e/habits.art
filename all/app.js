@@ -1,7 +1,8 @@
-// habits.art/all: every habit, newest first.
+// habits.art/all: every habit, newest first. Cards are added in batches as you scroll.
 (async function () {
   const grid = document.getElementById('grid');
   const phone = window.matchMedia('(max-width: 620px)');
+  const BATCH = 12;                       // cards added at a time (a multiple of 3 keeps desktop rows full)
   const setFlipped = (card, on) => { card.classList.toggle('flipped', on); card.setAttribute('aria-pressed', String(on)); };
   const closeAll = () => document.querySelectorAll('.card.flipped').forEach(c => setFlipped(c, false));
 
@@ -15,12 +16,8 @@
   }
 
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const LABEL = { mindset: 'Mindset', relationships: 'Relationships', communication: 'Communication', decisions: 'Decisions',
-                  productivity: 'Productivity', growth: 'Growth', health: 'Health', joy: 'Joy' };
-  const fmt = d => new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
-  // build every card once; filtering only shows or hides them
-  for (const h of habits) {
+  function makeCell(h) {
     const cell = document.createElement('div');
     cell.className = 'cell';
     cell.id = h.slug;
@@ -45,15 +42,35 @@
       closeAll();
       if (!wasOpen) setFlipped(card, true);
     });
-    h.el = cell;
-    h.hay = [h.name, h.lead, ...h.text].join(' ').toLowerCase();
-    grid.appendChild(cell);
+    return cell;
   }
 
-  // all.habits.art/#pen-pal opens with that card in view and turned over
+  // add cards up to index `upTo` (exclusive)
+  let shown = 0;
+  function showUpTo(upTo) {
+    const frag = document.createDocumentFragment();
+    while (shown < Math.min(upTo, habits.length)) frag.appendChild(makeCell(habits[shown++]));
+    grid.insertBefore(frag, sentinel);
+    if (shown >= habits.length) observer.disconnect(), sentinel.remove();
+  }
+
+  // an invisible marker at the end of the grid; when it nears the screen, the next batch is added
+  const sentinel = document.createElement('div');
+  sentinel.style.cssText = 'grid-column:1/-1;height:1px';
+  grid.appendChild(sentinel);
+  const observer = new IntersectionObserver(entries => {
+    if (entries.some(e => e.isIntersecting)) showUpTo(shown + BATCH);
+  }, { rootMargin: '1500px 0px' });   // start well before the end, so scrolling never waits
+  showUpTo(BATCH);
+  observer.observe(sentinel);
+
+  // habits.art/all/#pen-pal opens with that card in view (and turned over on desktop)
   function openFromHash() {
-    const cell = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    if (!cell) return;
+    const slug = location.hash && decodeURIComponent(location.hash.slice(1));
+    const i = slug ? habits.findIndex(h => h.slug === slug) : -1;
+    if (i < 0) return;
+    if (i >= shown) showUpTo(Math.ceil((i + 1) / BATCH) * BATCH);
+    const cell = document.getElementById(slug);
     cell.scrollIntoView({ block: phone.matches ? 'start' : 'center' });
     closeAll();
     if (!phone.matches) setFlipped(cell.querySelector('.card'), true);
