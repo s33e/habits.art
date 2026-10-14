@@ -1,0 +1,156 @@
+/* all.habits.art: every habit, newest first, with filters. Based on habits.art. Front is the drawing; tap and the card
+   turns over to the habit in words. On phones: one tall card per screen, drawing above text. */
+/* both fonts are SIL Open Font License, served from this site */
+@font-face{ font-family: "Poppins"; font-weight: 800; font-style: normal; font-display: swap; src: url(../fonts/poppins-latin-800-normal.woff2) format("woff2"); }
+@font-face{ font-family: "Gochi Hand"; font-weight: 400; font-style: normal; font-display: swap; src: url(../fonts/gochi-hand-latin-400-normal.woff2) format("woff2"); }
+
+:root{
+  color-scheme: light;
+  --paper: #F5F5F7;   /* page ground, Apple light grey */
+  --card: #FFFFFF;    /* the cards stay paper-white like the drawings */
+  --title: #86868B;
+  --ink: #111111;
+  --quiet: #6E6E73;
+  --hair: #E5E5EA;
+  --green: #22C55E;
+  --display: "Poppins", "Arial Black", -apple-system, sans-serif;
+  --hand: "Gochi Hand", "Bradley Hand", "Segoe Print", cursive;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html, body{ margin: 0; background: var(--paper); color: var(--ink); }
+body{ font-family: var(--font); -webkit-font-smoothing: antialiased; }
+
+.wrap{ max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+
+/* the header echoes each drawing's own title block: heavy caps, handwritten address beneath */
+.mast{
+  text-align: center;
+  padding-block: clamp(40px, 7vw, 88px) clamp(28px, 4vw, 52px);
+}
+.title{
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(36px, 6.2vw, 68px);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--title);
+}
+.byline{
+  margin: .35em 0 0;
+  font-family: var(--hand);
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1;
+}
+
+/* ---------- grid ---------- */
+.grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 24px);
+  padding-block: 0 72px;
+}
+.cell{ min-width: 0; }
+
+/* ---------- card ---------- */
+.card{
+  display: block; width: 100%;
+  aspect-ratio: 1; max-width: 100%;
+  container-type: inline-size;
+  perspective: 1400px;
+  border: 0; padding: 0; background: none;
+  cursor: pointer; font: inherit; color: inherit; text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.card:focus-visible{ outline: 2px solid var(--green); outline-offset: 4px; border-radius: 12px; }
+
+.card-inner{
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .7s cubic-bezier(.3,.7,.2,1);
+}
+.card.flipped .card-inner{ transform: rotateY(180deg); }
+
+.face{
+  position: absolute; inset: 0;
+  border-radius: 10px; overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 0 0 1px var(--hair);
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+}
+.front img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (hover: hover){
+  .card:hover .face{ box-shadow: 0 0 0 1px var(--hair), 0 14px 32px rgba(0,0,0,.08); }
+}
+
+.back{
+  transform: rotateY(180deg);
+  display: flex; flex-direction: column; justify-content: flex-start;
+  padding: 11cqi 11cqi 16cqi;  /* fixed top padding; room at the bottom for the mark */
+  overflow-y: auto;
+}
+/* one size for the whole text; the first sentence is bold. --fit (set in app.js) shrinks long texts */
+.back p{
+  margin: 0 0 .6em;
+  font-size: clamp(13px, calc(5.2cqi * var(--fit, 1)), 20px);
+  line-height: 1.5;
+  color: var(--ink);
+}
+.back p:last-of-type{ margin-bottom: 0; }
+.back p.lead{ font-weight: 700; margin-bottom: .5em; }
+/* a quiet grey mark, centred at the bottom of every card back */
+.back .mark{ position: absolute; left: 50%; bottom: 7cqi; transform: translateX(-50%); width: 7.5cqi; height: auto; }
+/* narrower windows: the text needs that room, so the mark steps aside */
+@media (max-width: 900px){
+  .back{ padding-bottom: 9cqi; }
+  .back .mark{ display: none; }
+}
+
+.foot{ text-align: center; font-size: 12px; line-height: 1.6; color: var(--title); padding-block: 8px 48px; }
+
+.scroll-hint{ display: none; }
+
+/* ---------- phones: one tall card per screen, drawing above its text, no turning ---------- */
+@media (max-width: 620px){
+  .mast{ scroll-snap-align: start; padding-block: 12px 10px; }
+  .title{ display: none; }   /* on phones only the handwritten address, so the first card gets the room */
+  .byline{ margin: 0; font-size: 22px; color: var(--quiet); }
+  .grid{ grid-template-columns: minmax(0, 1fr); gap: 0; padding-block: 0; }
+  .cell{ padding-block: 10px; }
+
+  .foot{ scroll-snap-align: end; padding-block: 24px 40px; }
+
+  .card{ aspect-ratio: auto; width: 100%; perspective: none; cursor: default; container-type: normal; }
+  .card-inner{
+    height: auto; transform: none; transition: none;
+    display: flex; flex-direction: column;
+    background: var(--card); border-radius: 14px; overflow: hidden;
+    box-shadow: 0 0 0 1px var(--hair);
+  }
+  .card.flipped .card-inner{ transform: none; }
+  .face{ position: static; -webkit-backface-visibility: visible; backface-visibility: visible; border-radius: 0; box-shadow: none; }
+  .card:hover .face{ box-shadow: none; }
+  .front img{ aspect-ratio: 1; height: auto; }
+  .back{ transform: none; padding: 4px 26px 30px; overflow: visible; }
+  .back p{ font-size: 18px; }
+  .back .mark{ display: none; }   /* phones already have the grey scroll arrow */
+}
+
+@media (prefers-reduced-motion: reduce){
+  .card-inner{ transition: none; }
+  html{ scroll-behavior: auto; }
+}
+
+/* ---------- filter bar ---------- */
+.bar{ position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 12px 0 14px; margin-bottom: 18px; }
+.search{ display: block; width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 11px 16px; border-radius: 12px; border: 1px solid var(--hair); background: var(--card); color: var(--ink); }
+.search:focus{ outline: 2px solid var(--green); outline-offset: 1px; }
+.chips{ display: flex; gap: 8px; overflow-x: auto; padding-top: 10px; scrollbar-width: none; }
+.chips::-webkit-scrollbar{ display: none; }
+.chip{ flex: none; font: inherit; font-size: 14px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--hair); background: var(--card); color: var(--ink); cursor: pointer; }
+.chip[aria-pressed="true"]{ background: var(--ink); color: var(--card); border-color: var(--ink); }
+.count{ font-size: 13px; color: var(--quiet); padding-top: 10px; }
+.meta{ font-size: 12px; color: var(--quiet); margin: 0 0 .8em !important; }
+.empty{ grid-column: 1 / -1; text-align: center; color: var(--quiet); padding: 48px 0; }
