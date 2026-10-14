@@ -39,8 +39,8 @@
     const length = [h.lead, ...h.text].join(' ').length;
     card.style.setProperty('--fit', Math.min(1, Math.sqrt(175 / length)).toFixed(3));
     card.addEventListener('click', e => {
-      if (phone.matches) return;
       e.stopPropagation();
+      if (phone.matches) { openSheet(h); return; }
       const wasOpen = card.classList.contains('flipped');
       closeAll();
       if (!wasOpen) setFlipped(card, true);
@@ -49,17 +49,36 @@
     h.hay = [h.name, h.lead, ...h.text].join(' ').toLowerCase();
     grid.appendChild(cell);
   }
+
+  // phones: tap a drawing to read it full screen; close with ×, Back, or Escape
+  const sheet = document.createElement('div');
+  sheet.className = 'sheet'; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-modal', 'true');
+  document.body.appendChild(sheet);
+  function openSheet(h, fromHash) {
+    sheet.innerHTML = `<button class="close" type="button" aria-label="Close">×</button>
+      <img class="draw" src="${esc(h.image)}" alt="${esc(h.name)}" width="600" height="600">
+      <div class="body"><p class="lead">${esc(h.lead)}</p>${h.text.map(t => `<p>${esc(t)}</p>`).join('')}</div>`;
+    sheet.classList.add('open'); sheet.scrollTop = 0; document.body.classList.add('reading');
+    sheet.querySelector('.close').addEventListener('click', e => { e.stopPropagation(); history.length > 1 && location.hash ? history.back() : closeSheet(); });
+    if (!fromHash) history.pushState(null, '', '#' + h.slug);
+  }
+  function closeSheet() {
+    sheet.classList.remove('open'); document.body.classList.remove('reading');
+    if (location.hash) history.replaceState(null, '', location.pathname);
+  }
   // all.habits.art/#pen-pal opens with that card in view and turned over
   function openFromHash() {
     const cell = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    if (!cell) return;
+    if (!cell) { if (sheet.classList.contains('open')) closeSheet(); return; }
+    if (phone.matches) { openSheet(habits.find(x => x.slug === cell.id), true); return; }
     cell.scrollIntoView({ block: 'center' });
     closeAll();
     if (!phone.matches) setFlipped(cell.querySelector('.card'), true);
   }
   window.addEventListener('hashchange', openFromHash);
+  window.addEventListener('popstate', openFromHash);
   openFromHash();
 
   document.addEventListener('click', closeAll);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeAll(); if (sheet.classList.contains('open')) closeSheet(); } });
 })();
